@@ -1,5 +1,5 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react'
-import { loginUser } from '../services/authService'
+import { loginUser } from '../services/auth.service'
 
 function Login() {
 
