@@ -1,16 +1,46 @@
+import Offer from "../models/Offer"
+import { FetchAPI } from "../utils/FetchAPI"
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+
 export class OfferService {
     static async getAll() {
-        try {
-            const response = await fetch('http://localhost:3000/api/offers')
-            if (!response.ok) {
-                const errorData = await response.json().catch(()=>null)
-                throw new Error(errorData?.message || 'Unknown Error')
+        return await FetchAPI(API_BASE_URL+'/offers')
+    }
+
+    static async search(title?:string) {
+        let url = API_BASE_URL+'/offers?'
+        if(title) url += 'title='+title
+        return await FetchAPI(url)
+    }
+
+    static async getById(id: number) {
+        return await FetchAPI(API_BASE_URL+'/offers/'+id)
+    }
+
+    static async create(offer: Partial<Offer>) {
+        return await FetchAPI(API_BASE_URL+'/offers',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(offer),
+                credentials: 'include'
             }
-            const data = await response.json()
-            return data
-        } catch (error) {
-            const msg = error instanceof Error ? error.message : 'Error desconocido'
-            throw new Error(msg)
-        }
+        )
+    }
+
+    static async update(id:number,offer: Partial<Offer>) {
+        return await FetchAPI(API_BASE_URL+'/offers/'+id,
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(offer),
+                credentials: 'include'
+            }
+        )
     }
 }
