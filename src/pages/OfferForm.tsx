@@ -3,6 +3,7 @@ import Offer from '../models/Offer'
 import { OfferService } from '../services/offer.service'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Temporal } from 'temporal-polyfill'
+import toast from 'react-hot-toast'
 
 // Formulario de creacion y edición de una oferta
 function OfferForm() {
@@ -54,8 +55,10 @@ function OfferForm() {
       }
       if (id) OfferService.update(Number(id), formData)
       else OfferService.create(formData)
+      toast.success('Offer succesfully created')
       navigate('/offers')
     } catch (error) {
+      toast.success('Error creating offer')
       setError(error instanceof Error ? error.message : 'Unknown error')
     } finally {
       setLoading(false)
