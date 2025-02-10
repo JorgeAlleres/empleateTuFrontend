@@ -43,4 +43,16 @@ export class OfferService {
             }
         )
     }
+
+    static async delete(id: number) {
+        return await FetchAPI(API_BASE_URL+'/offers/'+id,
+            {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            }
+        )
+    }
 }
