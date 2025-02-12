@@ -5,17 +5,29 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 export class OfferService {
     static async getAll() {
-        return await FetchAPI(API_BASE_URL+'/offers')
+        return await FetchAPI(API_BASE_URL+'/offers',
+            {
+                method: 'GET',
+                credentials: 'include'
+            })
     }
 
     static async search(title?:string) {
         let url = API_BASE_URL+'/offers?'
         if(title) url += 'title='+title
-        return await FetchAPI(url)
+        return await FetchAPI(url,
+            {
+                method: 'GET',
+                credentials: 'include'
+            })
     }
 
     static async getById(id: number) {
-        return await FetchAPI(API_BASE_URL+'/offers/'+id)
+        return await FetchAPI(API_BASE_URL+'/offers/'+id,
+            {
+                method: 'GET',
+                credentials: 'include'
+            })
     }
 
     static async create(offer: Partial<Offer>) {

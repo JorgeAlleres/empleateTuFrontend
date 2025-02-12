@@ -5,11 +5,20 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 export class CategoryService {
     static async getAll() {
-        return await FetchAPI(API_BASE_URL+'/categories?')
+        return await FetchAPI(API_BASE_URL+'/categories?',
+            {
+                method: 'GET',
+                credentials: 'include'
+            }
+        )
     }
 
     static async getById(id: number) {
-        return await FetchAPI(API_BASE_URL+'/categories/'+id)
+        return await FetchAPI(API_BASE_URL+'/categories/'+id,
+            {
+                method: 'GET',
+                credentials: 'include'
+            })
     }
 
     static async create(category: Partial<Category>) {
