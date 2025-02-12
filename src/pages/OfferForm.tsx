@@ -4,12 +4,17 @@ import { OfferService } from '../services/offer.service'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Temporal } from 'temporal-polyfill'
 import toast from 'react-hot-toast'
+import { CategoryService } from '../services/category.service'
+import Category from '../models/Category'
 
 // Formulario de creacion y edición de una oferta
 function OfferForm() {
   const now = Temporal.Now.plainDateTimeISO()
   const threeMonthLater = now.add({ months: 3 }).toString().slice(0, 16)
   //const threeMonthLater = new Date(new Date().setMonth(new Date().getMonth() + 3)).toISOString().slice(0, 16)
+  
+  const [categories, setCategories] = useState<Category[]>()
+  
   const [form, setForm] = useState<Partial<Offer>>({
     title: '',
     description: '',
@@ -26,6 +31,13 @@ function OfferForm() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    CategoryService.getAll()
+      .then(setCategories)
+      .catch(error => setError(error.message))
+      .finally()
+  }, [])
 
   useEffect(() => {
     if(id) {
@@ -50,6 +62,7 @@ function OfferForm() {
       e.preventDefault()
       const formData = {
         ...form,
+        idCategory:form.idCategory ? Number(form.idCategory) : null,
         published: new Date(form.published || '').toISOString(),
         expired: new Date(form.expired || '').toISOString()
       }
@@ -65,8 +78,9 @@ function OfferForm() {
     }
   }
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { value, name } = e.target
+    //if(name==='idCategory') valueNew = Number(value)
     setForm({ ...form, [name]: value, })
   }
 
@@ -111,7 +125,13 @@ function OfferForm() {
           <input type='checkbox' name='active' checked={form.active} onChange={handleChangeCheckBox} />
         </label>
 
-        <div>ID categoria ...</div>
+        <div>Categoría</div>
+        <select className='text-black' name='idCategory' value={form.idCategory || ""} onChange={handleChange}>
+          <option value="">Selecciona Categoria</option>
+          {categories?.map(category =>
+            <option key={category.id} value={category.id}>{category.name}</option>
+          )}
+        </select>
 
         <button>Guardar</button>
 
